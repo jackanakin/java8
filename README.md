@@ -1,4 +1,4 @@
-#Lambdas, Streams , new Date APIs, Optionals and Parallel programming in Java 8
+# Lambdas, Streams , new Date APIs, Optionals and Parallel programming in Java 8
 > https://www.udemy.com/course/modern-java-learn-java-8-features-by-coding-it
 
 Imperative programming:</br>
@@ -12,24 +12,29 @@ Declarative programming:</br>
 * Object immutability.</br>
 * Analogous to SQL.</br>
 
-1. Example 1:
+Example 1:
 
 Imperative:</br>
-`int sum=0;`</br>
-`for( int i=0;i<=100;i++ ) { sum+=i; }`</br>
+```int sum=0;
+for( int i=0;i<=100;i++ ) { sum+=i; }
+```
 
 Declarative:</br>
-`int sum = IntStream.rangeClosed(0,100).map(Integer::new).sum();`</br>
+```
+int sum = IntStream.rangeClosed(0,100).map(Integer::new).sum();
+```
 
-1. Example 2:
+Example 2:
 
 Imperative:</br>
-`List<Integer> integerList =Arrays.asList(1,2,3,4,4,5,5,6,7,7,8,9,9);`</br>
-`List<Integer> uniqueList = new ArrayList<>();`</br>
-`for( Integer i :integerList ) { if(!uniqueList.contains(i)) uniqueList.add(i); }`</br>
+```
+List<Integer> integerList =Arrays.asList(1,2,3,4,4,5,5,6,7,7,8,9,9);
+List<Integer> uniqueList = new ArrayList<>();
+for( Integer i :integerList ) { if(!uniqueList.contains(i)) uniqueList.add(i); }
+```
 
 Declarative:</br>
-`List<Integer> uniqueList = integerList.stream().distinct().collect(toList());`</br>
+```List<Integer> uniqueList = integerList.stream().distinct().collect(toList());```
 
 ## 1. Lambda
 `Equivalent to a function (method) without a name, also referred as Anonymous functions.`
@@ -38,11 +43,13 @@ Declarative:</br>
 
 
 * Expression: 
-`( )    ->      { }`</br>
+```
+( )    ->      { }
+```
 Input  Arrow   Body</br>
 
-`() -> Single Statement or Expression;` {} curly braces aren't needed.</br>
-`() -> { Multiple Statement or Expressions };` curly braces are needed.</br>
+```() -> Single Statement or Expression;``` {} curly braces aren't needed.</br>
+```() -> { Multiple Statement or Expressions };``` curly braces are needed.</br>
 
 ### Examples</br>
 
@@ -60,11 +67,17 @@ new Thread(runnable).start();
 ```
 
 2. Lambda way:</br>
-`Runnable runnableLambda = () -> { System.out.println("Inside Runnable 2"); };`</br>
+```
+Runnable runnableLambda = () -> { System.out.println("Inside Runnable 2"); };
+```
 or</br>
-`Runnable runnableLambdaSimple = () -> System.out.println("Inside Runnable 3");`</br>
+```
+Runnable runnableLambdaSimple = () -> System.out.println("Inside Runnable 3");
+```
 or</br>
-`new Thread(() -> System.out.println("Inside Runnable 4")).start();`
+```
+new Thread(() -> System.out.println("Inside Runnable 4")).start();
+```
 or</br>
 ```
 Runnable runnableLambdaMultiStatements = () -> { 
@@ -85,9 +98,13 @@ Comparator<Integer> comparator  = new Comparator<Integer>() {
 ```
 
 2. Lambda way:</br>
-`Comparator<Integer> comparatorLambda = (Integer  a,Integer b) -> a.compareTo(b);`</br>
+```
+Comparator<Integer> comparatorLambda = (Integer  a,Integer b) -> a.compareTo(b);
+```
 or</br>
-`Comparator<Integer> comparatorLambda1 = (a,b) -> a.compareTo(b);`</br>
+```
+Comparator<Integer> comparatorLambda1 = (a,b) -> a.compareTo(b);
+```
 and</br>
 ```
 /**
