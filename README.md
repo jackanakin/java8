@@ -41,15 +41,17 @@ Declarative:</br>
 
 * Used to implement Functional Interfaces.</br>
 
-
 * Expression: 
 ```
-( )    ->      { }
+ ( )    ->      { }
+Input  Arrow   Body
 ```
-Input  Arrow   Body</br>
-
-```() -> Single Statement or Expression;``` {} curly braces aren't needed.</br>
-```() -> { Multiple Statement or Expressions };``` curly braces are needed.</br>
+```
+() -> Single Statement or Expression; // {} curly braces aren't needed
+```
+```
+() -> { Multiple Statement or Expressions }; //  curly braces are needed
+```
 
 ### Examples</br>
 
@@ -111,4 +113,63 @@ and</br>
 * Comparator chaining happens only when the first comparators result is zero.
 */
 System.out.println("Result of chaining comparator is with equal inputs : " + comparatorLambda1.thenComparing(comparatorLambda1).compare(2,2));
+```
+
+3. Functional Interfaces:</br>
+```
+@FunctionalInterface // optional annotation
+```
+`Is an interface that has exactly one abstract method.`
+
+3.1 Consumer Functional Interfaces:</br>
+
+```
+    // Example 1
+    Consumer<String>  upperCase = s -> System.out.println(s.toUpperCase());
+    upperCase.accept( "jardel" );
+    // JARDEL
+    System.out.println("--------------------");
+
+    // Example 2
+    List<String> list = Arrays.asList( "Anubis", "Atenas", "Mars", "Loki" );
+    list.forEach( upperCase );
+    /**
+        ANUBIS
+        ATENAS
+        MARS
+        LOKI
+        ANUBIS
+        */
+    System.out.println("--------------------");
+
+    // Example 3
+    Consumer<String> appendCase = s -> System.out.println("Random person:" + s);
+    list.forEach( upperCase.andThen( appendCase ) );
+    /** 
+        ANUBIS
+        Random person:Anubis
+        ATENAS
+        Random person:Atenas
+        MARS
+        Random person:Mars
+        LOKI
+        Random person:Loki
+    */
+    System.out.println("--------------------");
+
+    // Example 4
+    list.forEach((s) -> {
+        if( s.startsWith("A") )
+        {
+            upperCase.andThen(appendCase).accept(s);
+        }
+    });
+    /**
+        ANUBIS
+        Random person:Anubis
+        ATENAS
+        Random person:Atenas
+    */
+    System.out.println("--------------------");
+
 ```
