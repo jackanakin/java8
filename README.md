@@ -115,17 +115,20 @@ and</br>
 System.out.println("Result of chaining comparator is with equal inputs : " + comparatorLambda1.thenComparing(comparatorLambda1).compare(2,2));
 ```
 
-3. Functional Interfaces:</br>
+## 3. Functional Interfaces:</br>
 ```
 @FunctionalInterface // optional annotation
 ```
 `Is an interface that has exactly one abstract method.`
 
-3.1 Consumer Functional Interfaces:</br>
+### 3.1 Consumer Functional Interface:</br>
+`Only consumes one input and perform an operation, does not return anything.`
 
 ```
     // Example 1
     Consumer<String>  upperCase = s -> System.out.println(s.toUpperCase());
+    Consumer<String> appendCase = s -> System.out.println("Random person:" + s);
+
     upperCase.accept( "jardel" );
     // JARDEL
     System.out.println("--------------------");
@@ -133,6 +136,7 @@ System.out.println("Result of chaining comparator is with equal inputs : " + com
     // Example 2
     List<String> list = Arrays.asList( "Anubis", "Atenas", "Mars", "Loki" );
     list.forEach( upperCase );
+    list.forEach( each -> upperCase.accept(each) );
     /**
         ANUBIS
         ATENAS
@@ -143,7 +147,6 @@ System.out.println("Result of chaining comparator is with equal inputs : " + com
     System.out.println("--------------------");
 
     // Example 3
-    Consumer<String> appendCase = s -> System.out.println("Random person:" + s);
     list.forEach( upperCase.andThen( appendCase ) );
     /** 
         ANUBIS
@@ -173,3 +176,71 @@ System.out.println("Result of chaining comparator is with equal inputs : " + com
     System.out.println("--------------------");
 
 ```
+
+### 3.2 BiConsumer Functional Interface:</br>
+`Consumes two inputs and perform an operation, does not return anything.`
+
+```
+/** Example 1 */
+
+BiConsumer<String, String> biConsumer = (a, b) -> { System.out.println(" a : " + a + " b : " + b); };
+biConsumer.accept("java7", "java8");
+/**
+  *  a : java7 b : java8
+ */
+
+/** Example 2 */
+
+BiConsumer<Integer, Integer> multiply = (a, b) -> { System.out.println("Multiplication : " + (a * b)); };
+BiConsumer<Integer, Integer> addition = (a, b) -> { System.out.println("Addition : " + (a + b)); };
+BiConsumer<Integer, Integer> division = (a, b) -> { System.out.println("Division : " + (a / b)); };
+multiply.andThen(addition).andThen(division).accept(10, 5);
+/**
+  *  Addition : 15
+  *  Division : 2
+ */
+
+/** Example 3 */
+BiConsumer<String, List<String>> biConsumer = (name, activities) -> System.out.println(name + " : " + activities);
+biConsumer.accept("Roman", Arrays.asList("Mars", "Jupter", "Neptuno") );
+```
+
+### 3.3 Predicate Functional Interface:</br>
+`Receives an input, perform an operation and return a boolean`
+
+```
+/** Example 1 */
+
+Predicate<Integer> p1 = (i) -> i % 2 == 0;
+Predicate<Integer> p2 = (i) -> i % 5 == 0;
+
+System.out.println("Test : " + p1.test(3));
+System.out.println("And : " + p1.and(p2).test(11));
+System.out.println("Or : " + p1.or(p2).test(25));
+System.out.println("Negate : " + p1.and(p2).negate().test(4));
+/**
+    * Test : false
+    * And : false
+    * Or : true
+    * Negate : true
+*/
+
+/** Example 2 */
+Predicate<Double> approved = (s) -> s >= 7;
+List<Double> gradeList = Arrays.asList( 2d, 4.7, 9.3, 7.1, 8d, 8.5, 7.8 );
+
+gradeList.stream().filter(approved).collect(Collectors.toList());
+
+/** Example 3 */
+Function<Integer, Predicate<Integer>> gradePredicate = (toCompare) -> (number) -> number > toCompare;
+boolean result = gradePredicate.apply(7).test(5);
+
+/** Example 4 */
+Function<Double, Predicate<Double>> gradePredicate = (toCompare) -> (number) -> number >= toCompare;
+Predicate<Double> approved = (s) -> gradePredicate.apply(7d).test(s);
+
+gradeList.stream().filter(approved).collect(Collectors.toList());
+```
+
+### 3.4 Combining Predicate + Consumer:</br>
+
