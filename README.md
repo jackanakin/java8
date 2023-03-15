@@ -346,3 +346,74 @@ Supplier<List<Deities>> deitiesSupplier = () -> {
 };
 System.out.println(deitiesSupplier.get());
 ```
+
+### 3.11 Variables</br>
+
+```
+// Works
+private int counter = 0;
+
+public void run(){
+    Function<String, String> upperCase = (s) -> { counter++; return s.toUpperCase(); };
+    upperCase.apply("test");
+    System.out.println(counter);
+}
+
+// Works, but must be final
+public void run(){
+    final int counter = 0;
+    
+    Function<String, String> upperCase = (s) -> { System.out.println(counter); return s.toUpperCase(); };
+    upperCase.apply("test");
+    System.out.println(counter);
+}
+```
+
+
+## 4. Method Reference
+`ClassName::instance-methodName`</br>
+`ClassName::static-methodName`</br>
+`Instance::methodName`</br>
+
+* Simplify the implementation of Functional interfaces.</br>
+* Shortcut for writing Lambda Expressions.</br>
+* Refer a method in a class.</br>
+
+```
+/**
+* Class::instancemethod
+*/
+
+// Using Lambda
+Function<String, String> function = (s) -> s.toUpperCase();
+
+// Using Method Reference
+Function<String, String> method = String::toUpperCase;
+
+/**
+* Class::instancemethod
+*/
+
+// Using Lambda
+Consumer<Student> c2 = (student -> student.printListOfActivities());
+
+// Using Method Reference
+Consumer<Student> c3 = (Student::printListOfActivities);
+
+/**
+* Predicates
+*/
+
+// Using Lambda
+Predicate<Student> predicateUsingLambda = (s) -> s.getGradeLevel()>=3;
+
+// Using Method Reference
+Predicate<Student> predicateUsingMetRef = RefactorMethodReferenceExample::greaterThan;
+
+/**
+* Constructor Reference
+*/
+Supplier<Deities> supplier = Deities::new; // new Deities()
+Function<String, Deities> function = Deities::new; // new Deities(name)
+BiFunction<String, Double, Deities> biFunction = Deities::new; // new Deities(name, power)
+```
