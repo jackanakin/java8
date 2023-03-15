@@ -55,7 +55,7 @@ Input  Arrow   Body
 
 ### Examples</br>
 
-#### Runnable:</br>
+#### Runnable</br>
 
 1. Classic way:</br>
 ```
@@ -87,7 +87,7 @@ Runnable runnableLambdaMultiStatements = () -> {
     System.out.println("Inside Runnable 6");
 };
 ```
-#### Comparator:</br>
+#### Comparator</br>
 
 1. Classic way:</br>
 ```
@@ -115,13 +115,13 @@ and</br>
 System.out.println("Result of chaining comparator is with equal inputs : " + comparatorLambda1.thenComparing(comparatorLambda1).compare(2,2));
 ```
 
-## 3. Functional Interfaces:</br>
+## 3. Functional Interfaces</br>
 ```
 @FunctionalInterface // optional annotation
 ```
 `Is an interface that has exactly one abstract method.`
 
-### 3.1 Consumer Functional Interface:</br>
+### 3.1 Consumer Functional Interface</br>
 `Only consumes one input and perform an operation, does not return anything.`
 
 ```
@@ -177,7 +177,7 @@ System.out.println("Result of chaining comparator is with equal inputs : " + com
 
 ```
 
-### 3.2 BiConsumer Functional Interface:</br>
+### 3.2 BiConsumer Functional Interface</br>
 `Consumes two inputs and perform an operation, does not return anything.`
 
 ```
@@ -205,7 +205,7 @@ BiConsumer<String, List<String>> biConsumer = (name, activities) -> System.out.p
 biConsumer.accept("Roman", Arrays.asList("Mars", "Jupter", "Neptuno") );
 ```
 
-### 3.3 Predicate Functional Interface:</br>
+### 3.3 Predicate Functional Interface</br>
 `Receives an input, perform an operation and return a boolean`
 
 ```
@@ -242,5 +242,107 @@ Predicate<Double> approved = (s) -> gradePredicate.apply(7d).test(s);
 gradeList.stream().filter(approved).collect(Collectors.toList());
 ```
 
-### 3.4 Combining Predicate + Consumer:</br>
+### 3.4 Combining Predicate + Consumer</br>
 
+```
+public class Run {
+    static class Deities {
+        public String name;
+        public double power;
+
+        public Deities( String name, double power ) {
+            this.name = name; this.power = power;
+        }
+    }
+
+    public static void main(String[] args) {
+        List<Deities> deities = Arrays.asList( new Deities( "Odin", 10), new Deities( "Zeus", 10), new Deities( "Anubis", 10), new Deities( "Loki", 5) );
+        
+        Predicate<Deities> isPowerfull = ( god ) -> god.power >= 9;
+        BiConsumer<String, Double> godBiConsumer = (name, power) -> System.out.println(name + " : " + power);
+        
+        Consumer<Deities> consumer = ( god ) -> {
+
+            if(isPowerfull.test(god)){
+                godBiConsumer.accept(god.name, god.power);
+            }
+        };
+
+        deities.forEach( consumer );
+    }
+}
+```
+
+### 3.5 BiPredicate</br>
+
+```
+static class Deities {
+    public String name;
+    public double power;
+
+    public Deities(String name, double power) {
+        this.name = name;
+        this.power = power;
+    }
+}
+
+public static void main(String[] args) {
+    List<Deities> deities = Arrays.asList(new Deities("Odin", 10), new Deities("Zeus", 10),
+            new Deities("Anubis", 10), new Deities("Loki", 5));
+
+    BiPredicate<String, Double> biPredicate = (name, power) -> name.startsWith("O") && power >= 9;
+    Consumer<Deities> consumer = (deitie) -> {
+        if (biPredicate.test(deitie.name, deitie.power)) {
+            System.out.println(deitie.name);
+        }
+    };
+
+    deities.forEach(consumer);
+}
+```
+
+### 3.6 Function</br>
+`Function<T,R> function =  (input) -> { //do stuff; return something; }`</br>
+Expects an input, perform an operation and returns a result.</br>
+T - Input  type</br>
+R - Output type</br>
+
+```
+Function<String,String> upperCase =  (name) -> name.toUpperCase();
+System.out.println(upperCase.apply("odin"));
+```
+
+### 3.7 BiFunction</br>
+`Function<T, U, R> function =  (input1, input2) -> { //do stuff; return something; }`</br>
+Expects an input, perform an operation and returns a result.</br>
+T - Input  type1</br>
+U - Input  type2</br>
+R - Output type</br>
+
+### 3.8 UnaryOpeartor</br>
+`UnaryOperator<T> unaryOperation = (input) -> return input; `</br>
+Expects one input returns a result of the same type after processing.</br>
+
+```
+UnaryOperator<String> unaryOperator = (s)->s.concat(": Default");
+System.out.println(unaryOperator.apply("java8"));
+```
+
+### 3.9 BinaryOpeartor</br>
+`BinaryOpeartor<T> binaryOpeartor = (input1, input2) -> return input1+input2; `</br>
+Expects two input of the same type and returns a result also of the same type after processing.</br>
+
+```
+BinaryOperator<Integer> binaryOperator = (a,b) -> a * b;
+System.out.println(binaryOperator.apply(3,4));
+```
+### 3.10 Supplier</br>
+`Supplier<T> supplier = () -> return item;`</br>
+Produces an item of type T, lika a database query or get operation.</br>
+
+```
+Supplier<List<Deities>> deitiesSupplier = () -> {
+    return Arrays.asList(new Deities("Odin", 10), new Deities("Zeus", 10), new Deities("Anubis", 10), new Deities("Loki", 5));
+};
+System.out.println(deitiesSupplier.get());
+```
