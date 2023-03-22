@@ -417,3 +417,120 @@ Supplier<Deities> supplier = Deities::new; // new Deities()
 Function<String, Deities> function = Deities::new; // new Deities(name)
 BiFunction<String, Double, Deities> biFunction = Deities::new; // new Deities(name, power)
 ```
+
+## 5. Stream API
+`Stream is a pipeline of aggregate operations that can be applied to process a sequence of elements, can be created out of a collection such as a List or Arrays or any kind of I/O resource.`
+
+```
+List<String> list = Arrays.asList( "Odin", "Thor", "Loki" );
+list.stream(); // sequential
+list.parallelStream(); // parallel
+```
+* Cannot add or modify data, it is a fixed data set.</br>
+* Elements can only be accessed in sequence.</br>
+* It's lazily constructed.</br>
+* Stream operations can be performed either sequentially or in parallel.</br>
+* Can be used with arrays or any kind of I/O.</br>
+* Main purpose is to perform some operation on collections.</br>
+
+Streams Parts:
+
+Data Source: provides the elements to the pipeline.
+
+* Example: `List, Array, Collection`
+
+Intermediate Operations: get elements one-by-one and process them.</br>
+
+All intermediate operations are lazy, and, as a result, no operations will have any effect until the pipeline starts to work
+
+* `filter`: filter the elements with Predicate
+
+* `limit(n)`: limit the n of elements to be processed.
+
+* `skip(n)`: skips the n first elements.
+
+* `peek`: Mainly to support debugging, where you want to see the elements as they flow past a certain point in a pipeline. Also usefull when we want to alter the inner state of an element, like converting all name to lowercase before printing them.</br>
+```
+Stream<User> userStream = Stream.of(new User("Alice"), new User("Bob"), new User("Chuck"));
+userStream.peek(u -> u.setName(u.getName().toLowerCase())).forEach(System.out::println);
+```
+
+* `map`: converts an object to something else.</br>
+```
+Set<String> namesUpperCase = students.stream() //Stream<Student>
+        .map(Student::getName) // Stream<String>
+        .map(String::toUpperCase) // Stream<String> -> UpperCase
+        .collect(toList()); // terminal operation
+```
+
+* `flatMap`: same as map, but used in the stream context where each element represents multiple elements.</br>
+```
+List<Deities> deitiesList = pantheonList.stream() // Stream<Deities>
+        .map(Pantheon::getDeities) // <Stream<List<Deities>>
+        .flatMap(List::stream) // <Stream<String>
+        .collect(Collectors.toList()); // collects it to a List.
+```
+
+* `filter`: filters the elements in the stream, it's input is a `Predicate Functional`.
+
+* `distinct`: returns a stream with unique elements
+
+* `count`: returns a long with the total number of elements.
+
+* `sorted`: sort the elements in the stream.
+```
+List<Deities> orderedByName = list.stream() // Stream<Pantheon>
+        .peek((pantheon -> {
+            System.out.println("peeking:" + pantheon); // peek at pantheon object
+        }))
+        .map(Pantheon::getDeities) // <List<Deities>
+        .flatMap(List::stream) // Stream<Deities>
+        .sorted(Comparator.comparing(Deities::getName)) // sorting
+        .collect(Collectors.toList()); // collects it to a list.
+```
+
+Terminal Operations:
+
+End of the stream lifecycle. Most importantly for our scenario, they initiate the work in the pipeline.
+
+* `anyMatch, allMatch, noneMatch`: takes a Predicate as an input and returns a boolean as output.
+
+* `findFirst, findAny`: return an output as Optional
+
+* `collect`: allows us to perform mutable fold operations (repackaging elements to some data structures and applying some additional logic, concatenating them, etc.) on the elements.</br>
+```
+// .collect(toList());
+// .collect(toUnmodifiableList());
+// .collect(toSet());
+// .collect(toUnmodifiableSet());
+// .collect(toCollection(LinkedList::new))
+// .collect(toMap(Function.identity(), String::length))
+// .collect(toUnmodifiableMap(Function.identity(), String::length))
+// .collect(collectingAndThen(toList(), ImmutableList::copyOf)) -- collect Stream elements to a List instance, and then convert the result into an ImmutableList instance:
+// .collect(joining(" "));
+// .collect(counting());
+// .collect(summarizingDouble(String::length)); -- SummarizingDouble/Long/Int 
+// .collect(summingDouble(String::length)); -- returns a sum of extracted elements
+// .collect(averagingDouble(String::length)); -- returns an average of extracted elements
+// .collect(maxBy(Comparator.naturalOrder())); 
+// .collect(minBy(Comparator.naturalOrder())); 
+// .collect(groupingBy(String::length, toSet())); -- groups string by their length
+```
+
+* `reduce`: reduce  the contents of a stream to a single value, takes two inputs: </br>
+1. default or initial value (optional, used in the first interaction also).</br>
+2. BinaryOperator<T></br>
+```
+// Example 1
+Optional<Integer> reduceValue = integerList.stream()
+        .reduce((a, b) -> a * b); // performs multiplication for each element in the stream
+
+// Example 2
+String allNamesReduce = list.stream()
+        .map(Pantheon::getDeities)
+        .flatMap(List::stream)
+        .map(Deities::getName)
+        .reduce("", ( a, b ) -> a + " -> " + b );
+```
+
+[Java Example]()
