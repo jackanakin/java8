@@ -533,4 +533,70 @@ String allNamesReduce = list.stream()
         .reduce("", ( a, b ) -> a + " -> " + b );
 ```
 
+### 5.1 Factory Methods
+
+* `of`: creates a stream of the values supplied:</br>
+```
+Stream<String> stringStream = Stream.of("adam","dan","jenny","dave");
+stringStream.forEach(System.out::println);
+```
+
+* `iterate`: create an infinete stream which is limited by limit(), inputs are seed and an UnaryOperator:</br>
+```
+List<Integer> integerList  = Stream.iterate(1, x->x*2)
+            .limit(10)
+            .map(Integer::new)
+            .collect(toList());
+System.out.println("iterate : " + integerList);
+```
+
+* `generate`: receive an supplier as input, creates new values and is limited by limit():</br>
+```
+Supplier<Integer> supplier = new Random()::nextInt;
+
+List<Integer> integerList1  = Stream.generate(supplier)
+            .limit(10)
+            .collect(toList());
+System.out.println("generate : " + integerList1);
+```
+
 [Java Example]()
+
+### 5.2 Numeric Streams
+`IntStream, LongStream, DoubleStream`
+
+* `range`: returns a sequential ordered IntStream from startInclusive to endInclusive by an incremental step of 1, excludes the endInclusive value:</br>
+
+* `rangedClosed`: returns a sequential ordered IntStream from startInclusive to endInclusive by an incremental step of 1:</br>
+```
+System.out.println(IntStream.rangeClosed(1,6).sum());
+```
+
+* `max, min, avg`:</br>
+```
+OptionalInt max = IntStream.rangeClosed(1,50).max();
+OptionalLong min = LongStream.rangeClosed(1,50).min();
+OptionalDouble avg = IntStream.rangeClosed(1,50).average();
+```
+
+* `boxed`(intermediate operation): returns a Stream consisting of the elements of this stream, each boxed to an Integer:</br>
+```
+IntStream stream = IntStream.range(3, 8);
+Stream<Integer> stream1 = stream.boxed();
+stream1.forEach(System.out::println);
+```
+
+* `mapToInt, mapToDouble, mapToLong`(intermediate operation): returns an (IntStream, DoubleStream or LongStream) consisting of the results of applying the given function:</br>
+```
+List<String> list = Arrays.asList("3", "6", "8", "14", "15");
+list.stream().mapToInt( num -> Integer.parseInt( num ) ).filter(num -> num % 3 == 0).forEach(System.out::println);
+```
+
+* `mapToObj`(intermediate operation): returns an object-valued Stream consisting of the results of applying the given function:</br>
+```
+IntStream stream = IntStream.range(3, 8);
+
+Stream<String> stream1 = stream.mapToObj( num -> Integer.toBinaryString( num ) );
+
+stream1.forEach(System.out::println);
+```
