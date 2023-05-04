@@ -499,22 +499,23 @@ End of the stream lifecycle. Most importantly for our scenario, they initiate th
 
 * `collect`: allows us to perform mutable fold operations (repackaging elements to some data structures and applying some additional logic, concatenating them, etc.) on the elements.</br>
 ```
-// .collect(toList());
-// .collect(toUnmodifiableList());
-// .collect(toSet());
-// .collect(toUnmodifiableSet());
-// .collect(toCollection(LinkedList::new))
-// .collect(toMap(Function.identity(), String::length))
-// .collect(toUnmodifiableMap(Function.identity(), String::length))
-// .collect(collectingAndThen(toList(), ImmutableList::copyOf)) -- collect Stream elements to a List instance, and then convert the result into an ImmutableList instance:
-// .collect(joining(" "));
-// .collect(counting());
-// .collect(summarizingDouble(String::length)); -- SummarizingDouble/Long/Int 
-// .collect(summingDouble(String::length)); -- returns a sum of extracted elements
-// .collect(averagingDouble(String::length)); -- returns an average of extracted elements
-// .collect(maxBy(Comparator.naturalOrder())); 
-// .collect(minBy(Comparator.naturalOrder())); 
-// .collect(groupingBy(String::length, toSet())); -- groups string by their length
+.collect(toList());
+.collect(toUnmodifiableList());
+.collect(toSet());
+.collect(toUnmodifiableSet());
+.collect(toCollection(LinkedList::new))
+.collect(toMap(Function.identity(), String::length))
+.collect(toUnmodifiableMap(Function.identity(), String::length))
+.collect(collectingAndThen(toList(), ImmutableList::copyOf)) // collect Stream elements to a List instance, and then convert the result into an ImmutableList instance:
+.collect(joining("delimiter-", "start-prefix", "end-suffix"));
+.collect(counting()); // returns a long
+.collect(summarizingDouble(String::length)); // SummarizingDouble/Long/Int 
+.collect(summingDouble(String::length)); // returns a sum of extracted elements
+.collect(averagingDouble(String::length)); // returns an average of extracted elements
+.collect(maxBy(Comparator.naturalOrder())); 
+.collect(minBy(Comparator.reverseOrder())); 
+.collect(groupingBy(String::length, toSet())); // groups string by their length
+.collect(partitioningBy(gpaPredicate)); // returns a list Map<Boolean,List<Student>> 
 ```
 
 * `reduce`: reduce  the contents of a stream to a single value, takes two inputs: </br>
@@ -600,3 +601,46 @@ Stream<String> stream1 = stream.mapToObj( num -> Integer.toBinaryString( num ) )
 
 stream1.forEach(System.out::println);
 ```
+
+## 6 Parallel Streams
+
+```
+System.out.println(Runtime.getRuntime().availableProcessors());
+
+int total = IntStream.rangeClosed(1,1000000)
+            .parallel() // splits the data in to multiple parts //775057
+            .sum(); //performs the sum of the individual parts and consolidate the result.
+```
+
+## 7 Optional
+
+Creating Optional:</br>
+```
+Optional<String> empty = Optional.empty();
+Optional<String> ofNotNull = Optional.of("name"); // can't pass null value, will throw NPE
+Optional<String> ofNull = Optional.ofNullable(null); // might pass null value as well
+```
+
+Value Presence:</br>
+```
+System.out.println(ofNotNull.isPresent());
+System.out.println(ofNull.isEmpty());
+```
+
+Conditional:</br>
+```
+Optional<String> opt = Optional.of("Jardel");
+opt.ifPresent(name -> System.out.println(name.length()));
+```
+
+Default Value/Or Else:</br>
+```
+String nullName = null;
+String nameElse = Optional.ofNullable(nullName).orElse("john"); // expects a default value
+
+String nameElseGet = Optional.ofNullable(nullName).orElseGet(() -> "john"); // expects a supplier functional interface
+assertEquals("john", name);
+
+String nameException = Optional.ofNullable(nullName).orElseThrow(IllegalArgumentException::new);
+```
+

@@ -1,20 +1,22 @@
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import _core.Deities;
 import _core.Pantheon;
 import _core.Util;
+import _core.Pantheon.Culture;
 
 public class StreamApis {
     public static void main(String[] args) {
         List<Pantheon> list = Util.allPantheonSupplier.get();
+        List<Deities> allDeities = list.stream().map(Pantheon::getDeities).flatMap(List::stream).collect(Collectors.toList());
         List<Integer> integerList = Arrays.asList(1, 3, 5, 7);
 
         Predicate<Pantheon> isGreek = pantheon -> pantheon.getCulture().equals(Pantheon.Culture.GREEK);
@@ -103,5 +105,37 @@ public class StreamApis {
         System.out.println("Example 8 -----------------------------------------------");
         System.out.println("min: " + min.get() + " <- max: " + max.get());
         System.out.println("---------------------------------------------------------");
+
+        // Example 9
+        double totalPower = allDeities.stream().collect(Collectors.summingDouble(Deities::getPower));
+        double averagePower = allDeities.stream().collect(Collectors.averagingDouble(Deities::getPower));
+        System.out.println("Example 9 -----------------------------------------------");
+        System.out.println("totalPower: " + totalPower);
+        System.out.println("averagePower: " + averagePower);
+        System.out.println("---------------------------------------------------------");
+
+        // Example 10
+        Map<Culture, List<Deities>> cultureGrouping =  allDeities.stream().collect(Collectors.groupingBy(Deities::getCulture));
+        Map<String, List<Deities>> customGrouping =  allDeities.stream().collect(Collectors.groupingBy( god -> god.getPower() > 9d ? "Powerfull" : "Weak"));
+        
+        Map<Culture,  Map<String,List<Deities>>> twoLevelGrouping =  allDeities.stream().collect(Collectors.groupingBy(Deities::getCulture, Collectors.groupingBy(god -> god.getPower() > 9d ? "Powerfull" : "Weak")));
+
+        System.out.println("Example 10 -----------------------------------------------");
+        System.out.println("cultureGrouping: " + cultureGrouping);
+        System.out.println("customGrouping: " + customGrouping);
+        System.out.println("twoLevelGrouping: " + twoLevelGrouping);
+        System.out.println("---------------------------------------------------------");
+
+        // Example 11
+        Map<Boolean, List<Deities>> powerfullPartitioning = allDeities.stream().collect(Collectors.partitioningBy(Util.isPowerfullPredicate));
+        
+
+        System.out.println("Example 11 -----------------------------------------------");
+        System.out.println("powerfullPartitioning: " + powerfullPartitioning);
+        System.out.println("---------------------------------------------------------");
+
+        // Example 12
+        IntStream of = IntStream.of(1,2,3,4,5);
+        Stream<Integer> boxed = of.boxed();
     }
 }

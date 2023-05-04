@@ -2,12 +2,13 @@ package _core;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class Util {
 
-    public Predicate<Deities> isPowerfullPredicate = god -> god.getPower() > 9;
+    public static Predicate<Deities> isPowerfullPredicate = god -> god.getPower() > 9;
     // public Predicate<Deities> isNordic = god -> god.() > 9;
 
     public static Supplier<List<Deities>> norseDeitiesSupplier = () -> {
@@ -40,4 +41,6 @@ public class Util {
     public static Supplier<List<Pantheon>> allPantheonSupplier = () -> {
         return Arrays.asList(norsePantheonSupplier.get(), egyptianPantheonSupplier.get(), greekPantheonSupplier.get());
     };
+
+    public static Optional<Pantheon> optionalPantheon = Optional.of( new Pantheon(Pantheon.Culture.EGYPTIAN, egyptianDeitiesSupplier.get()) );
 }
